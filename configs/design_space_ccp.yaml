@@ -1,0 +1,157 @@
+problem: ccp
+seed: 20260315
+template: templates/hardware_full_ccp_ngspice.cir.tmpl
+portable_template: templates/hardware_portable_ccp.cir.tmpl
+model_include: models/plasma_ccp_rom_fallback.inc
+target_waveform: data/target_ccp_waveform.csv
+search:
+  n_random: 24
+  n_local: 16
+  n_uncertainty: 4
+  local_sigma_fraction: 0.15
+  risk_aversion_std: 0.35
+
+render:
+  output_csv_name: ccp_waveform.csv
+
+design_space:
+  topology:
+    type: choice
+    values: [L, PI]
+
+  F_BIAS:
+    type: fixed
+    value: 1.356e7
+
+  VAC_BIAS:
+    type: range
+    low: 80.0
+    high: 500.0
+    log: false
+
+  R_GEN:
+    type: fixed
+    value: 50.0
+
+  L_MATCH:
+    type: range
+    low: 5.0e-8
+    high: 5.0e-6
+    log: true
+
+  C_MATCH_OUT:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  C_MATCH_IN:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  C_BLOCK:
+    type: range
+    low: 1.0e-10
+    high: 5.0e-8
+    log: true
+
+  CABLE_LEN_M:
+    type: range
+    low: 0.20
+    high: 4.00
+    log: false
+
+  CABLE_R_PER_M:
+    type: fixed
+    value: 0.08
+
+  CABLE_L_PER_M:
+    type: fixed
+    value: 3.1e-7
+
+  CABLE_C_PER_M:
+    type: fixed
+    value: 8.0e-11
+
+  RETURN_LEN_M:
+    type: range
+    low: 0.05
+    high: 2.00
+    log: false
+
+  RETURN_R_PER_M:
+    type: fixed
+    value: 0.03
+
+  RETURN_L_PER_M:
+    type: fixed
+    value: 2.0e-7
+
+  R_STAB:
+    type: fixed
+    value: 1.0e6
+
+  TSTEP:
+    type: fixed
+    value: 2.0e-9
+
+  TSTOP:
+    type: fixed
+    value: 8.0e-7
+
+uncertainty:
+  PL_G0:
+    type: range
+    low: 1.0e-3
+    high: 5.0e-3
+    log: true
+  PL_KD:
+    type: range
+    low: 0.05
+    high: 0.6
+    log: false
+  PL_CSP0:
+    type: range
+    low: 5.0e-12
+    high: 8.0e-11
+    log: true
+  PL_CSG0:
+    type: range
+    low: 5.0e-12
+    high: 8.0e-11
+    log: true
+  PL_CSPNL:
+    type: range
+    low: 1.0e-12
+    high: 3.0e-11
+    log: true
+  PL_CSGNL:
+    type: range
+    low: 1.0e-12
+    high: 3.0e-11
+    log: true
+  PL_VSCALE:
+    type: range
+    low: 30.0
+    high: 250.0
+    log: false
+  PL_ALPHA:
+    type: range
+    low: 1.0e-3
+    high: 3.0e-1
+    log: true
+  PL_TAU:
+    type: range
+    low: 5.0e-8
+    high: 3.0e-6
+    log: true
+
+objective:
+  w_v_rmse: 1.0
+  w_i_peak: 0.08
+  w_avg_power: 0.03
+  w_selfbias: 0.12
+  target_selfbias: 0.0
+  max_peak_current_A: 40.0

@@ -1,0 +1,210 @@
+problem: icp_bias
+seed: 20260315
+template: templates/hardware_full_icp_bias_ngspice.cir.tmpl
+portable_template: templates/hardware_portable_icp_bias.cir.tmpl
+model_include: models/plasma_icp_bias_rom_fallback.inc
+target_waveform: data/target_bias_waveform.csv
+search:
+  n_random: 20
+  n_local: 14
+  n_uncertainty: 4
+  local_sigma_fraction: 0.15
+  risk_aversion_std: 0.35
+
+render:
+  output_csv_name: icp_bias_waveform.csv
+
+design_space:
+  coil_topology:
+    type: choice
+    values: [L, PI]
+
+  bias_topology:
+    type: choice
+    values: [L, PI]
+
+  F_ICP:
+    type: fixed
+    value: 1.356e7
+
+  F_BIAS:
+    type: fixed
+    value: 2.0e6
+
+  VICP_AC:
+    type: range
+    low: 50.0
+    high: 400.0
+    log: false
+
+  VBIAS_AC:
+    type: range
+    low: 20.0
+    high: 300.0
+    log: false
+
+  VBIAS_DC:
+    type: range
+    low: -200.0
+    high: 20.0
+    log: false
+
+  R_ICP_GEN:
+    type: fixed
+    value: 50.0
+
+  R_BIAS_GEN:
+    type: fixed
+    value: 50.0
+
+  L_COIL_MATCH:
+    type: range
+    low: 5.0e-8
+    high: 3.0e-6
+    log: true
+
+  C_COIL_MATCH_OUT:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  C_COIL_MATCH_IN:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  L_BIAS_MATCH:
+    type: range
+    low: 5.0e-8
+    high: 3.0e-6
+    log: true
+
+  C_BIAS_MATCH_OUT:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  C_BIAS_MATCH_IN:
+    type: range
+    low: 2.0e-11
+    high: 2.0e-9
+    log: true
+
+  C_BLOCK_BIAS:
+    type: range
+    low: 1.0e-10
+    high: 5.0e-8
+    log: true
+
+  COIL_FEED_LEN_M:
+    type: range
+    low: 0.20
+    high: 4.00
+    log: false
+
+  BIAS_FEED_LEN_M:
+    type: range
+    low: 0.20
+    high: 4.00
+    log: false
+
+  FEED_R_PER_M:
+    type: fixed
+    value: 0.08
+
+  FEED_L_PER_M:
+    type: fixed
+    value: 3.1e-7
+
+  FEED_C_PER_M:
+    type: fixed
+    value: 8.0e-11
+
+  R_STAB_COIL:
+    type: fixed
+    value: 1.0e5
+
+  R_STAB_BIAS:
+    type: fixed
+    value: 1.0e6
+
+  TSTEP:
+    type: fixed
+    value: 2.5e-9
+
+  TSTOP:
+    type: fixed
+    value: 1.2e-6
+
+uncertainty:
+  PL_GCOIL0:
+    type: range
+    low: 2.0e-4
+    high: 5.0e-3
+    log: true
+  PL_KGCOIL:
+    type: range
+    low: 1.0e-4
+    high: 5.0e-3
+    log: true
+  PL_LCOIL0:
+    type: range
+    low: 2.0e-7
+    high: 1.0e-5
+    log: true
+  PL_G0:
+    type: range
+    low: 5.0e-4
+    high: 5.0e-3
+    log: true
+  PL_KG:
+    type: range
+    low: 0.05
+    high: 0.8
+    log: false
+  PL_CBP0:
+    type: range
+    low: 5.0e-12
+    high: 8.0e-11
+    log: true
+  PL_CBG0:
+    type: range
+    low: 5.0e-12
+    high: 8.0e-11
+    log: true
+  PL_CBNL:
+    type: range
+    low: 1.0e-12
+    high: 3.0e-11
+    log: true
+  PL_VBSCALE:
+    type: range
+    low: 20.0
+    high: 250.0
+    log: false
+  PL_KCOIL:
+    type: range
+    low: 1.0e-4
+    high: 2.0e-2
+    log: true
+  PL_KBIAS:
+    type: range
+    low: 1.0e-3
+    high: 3.0e-1
+    log: true
+  PL_TAU:
+    type: range
+    low: 5.0e-8
+    high: 3.0e-6
+    log: true
+
+objective:
+  w_v_rmse: 1.0
+  w_i_peak: 0.06
+  w_avg_power: 0.03
+  w_selfbias: 0.12
+  target_selfbias: -50.0
+  max_peak_current_A: 50.0

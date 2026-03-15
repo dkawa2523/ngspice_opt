@@ -1,0 +1,12 @@
+.venv/
+results/
+benchmark/
+
+__pycache__/
+*.pyc
+
+.DS_Store
+._*
+
+report_tmp.html
+report.html

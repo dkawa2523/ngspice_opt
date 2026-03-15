@@ -1,0 +1,69 @@
+meta:
+  sign_convention: "Current > 0 when it flows from plus_node to minus_node into plasma"
+  notes:
+    - "All plasma-facing ports are differential by default."
+    - "CCP is treated as one main differential port unless return-path optimization is elevated to an explicit port."
+    - "ICP+Bias uses at least two ports: coil and substrate bias."
+
+global_operating_parameters:
+  - gas_mix
+  - pressure_Pa
+  - wall_temp_K
+  - chamber_condition_id
+  - source_frequency_Hz
+
+ports:
+  - name: CCP_BIAS
+    plus_node: CCP_P
+    minus_node: CCP_N
+    mode: time_domain
+    required_from_circuit:
+      - v_t
+    required_from_plasma:
+      - i_t
+    preferred_from_plasma:
+      - q_sheath_powered_t
+      - q_sheath_ground_t
+      - p_abs_cycle
+      - v_selfbias
+      - i_harmonics
+      - ion_flux_proxy
+      - ion_energy_proxy
+
+  - name: ICP_COIL
+    plus_node: ICP_COIL_P
+    minus_node: ICP_COIL_N
+    mode: fundamental_complex
+    required_from_circuit:
+      - v1_complex
+      - frequency_Hz
+    required_from_plasma:
+      - i1_complex
+    preferred_from_plasma:
+      - y1_complex
+      - p_abs_coil
+      - density_proxy
+
+  - name: BIAS_RFDC
+    plus_node: BIAS_P
+    minus_node: BIAS_N
+    mode: time_domain
+    required_from_circuit:
+      - v_t
+    required_from_plasma:
+      - i_t
+    preferred_from_plasma:
+      - q_sheath_t
+      - p_abs_cycle
+      - v_selfbias
+      - i_harmonics
+      - ion_flux_proxy
+      - ion_energy_proxy
+
+optional_ports:
+  - name: CHAMBER_RETURN
+    plus_node: RET_P
+    minus_node: RET_N
+    use_when:
+      - "return path and chamber grounding are optimization variables"
+      - "distributed parasitics on the return path are non-negligible"

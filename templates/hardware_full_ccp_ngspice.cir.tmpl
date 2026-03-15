@@ -1,0 +1,59 @@
+* hardware_full_ccp_ngspice.cir
+.option method=gear maxord=2 reltol=1e-4 abstol=1e-10 chgtol=1e-15
+.param F_BIAS=@@F_BIAS@@
+.param VAC_BIAS=@@VAC_BIAS@@
+.param R_GEN=@@R_GEN@@
+.param L_MATCH=@@L_MATCH@@
+.param C_MATCH_OUT=@@C_MATCH_OUT@@
+.param C_MATCH_IN=@@C_MATCH_IN@@
+.param C_BLOCK=@@C_BLOCK@@
+.param R_CABLE=@@R_CABLE@@
+.param L_CABLE=@@L_CABLE@@
+.param C_CABLE=@@C_CABLE@@
+.param R_RETURN=@@R_RETURN@@
+.param L_RETURN=@@L_RETURN@@
+.param R_STAB=@@R_STAB@@
+
+.param PL_G0=@@PL_G0@@
+.param PL_KD=@@PL_KD@@
+.param PL_CSP0=@@PL_CSP0@@
+.param PL_CSG0=@@PL_CSG0@@
+.param PL_CSPNL=@@PL_CSPNL@@
+.param PL_CSGNL=@@PL_CSGNL@@
+.param PL_VSCALE=@@PL_VSCALE@@
+.param PL_ALPHA=@@PL_ALPHA@@
+.param PL_TAU=@@PL_TAU@@
+
+.include @@MODEL_INCLUDE@@
+
+VBIAS SRC_P 0 SIN(0 {VAC_BIAS} {F_BIAS})
+RGEN SRC_P SRC_INT {R_GEN}
+
+@@MATCH_BLOCK@@
+
+R_CABLE N_MATCH N_CABLE_R {R_CABLE}
+L_CABLE N_CABLE_R CCP_FEED {L_CABLE}
+C_CABLE CCP_FEED CCP_N {C_CABLE}
+C_BLOCK CCP_FEED CCP_P {C_BLOCK}
+
+R_RETURN CCP_N N_RETURN_R {R_RETURN}
+L_RETURN N_RETURN_R 0 {L_RETURN}
+
+* Measurement source defines current sign: plus -> minus into plasma
+VMEAS_CCP CCP_P CCP_PORT 0
+XPLASMA CCP_PORT CCP_N PLASMA_CCP params: G0={PL_G0} KD={PL_KD} CSP0={PL_CSP0} CSG0={PL_CSG0} CSPNL={PL_CSPNL} CSGNL={PL_CSGNL} VSCALE={PL_VSCALE} ALPHA={PL_ALPHA} TAU={PL_TAU}
+R_STAB CCP_PORT CCP_N {R_STAB}
+R_BLEED CCP_P CCP_N 1e12
+
+.tran @@TSTEP@@ @@TSTOP@@
+
+.control
+set wr_singlescale
+set wr_vecnames
+set filetype=ascii
+run
+wrdata @@OUTPUT_CSV@@ time v(ccp_p,ccp_n) i(vmeas_ccp) v(src_p)
+quit
+.endc
+
+.end

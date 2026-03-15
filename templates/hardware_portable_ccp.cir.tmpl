@@ -1,0 +1,37 @@
+* hardware_portable_ccp.cir
+* Portable CCP circuit template (no behavioral source, no Q= capacitor).
+
+.param F_BIAS=@@F_BIAS@@
+.param VAC_BIAS=@@VAC_BIAS@@
+.param R_GEN=@@R_GEN@@
+.param L_MATCH=@@L_MATCH@@
+.param C_MATCH_OUT=@@C_MATCH_OUT@@
+.param C_MATCH_IN=@@C_MATCH_IN@@
+.param C_BLOCK=@@C_BLOCK@@
+.param R_CABLE=@@R_CABLE@@
+.param L_CABLE=@@L_CABLE@@
+.param C_CABLE=@@C_CABLE@@
+.param R_RETURN=@@R_RETURN@@
+.param L_RETURN=@@L_RETURN@@
+.param R_STAB=@@R_STAB@@
+
+VBIAS SRC_P 0 SIN(0 {VAC_BIAS} {F_BIAS})
+RGEN SRC_P SRC_INT {R_GEN}
+
+@@MATCH_BLOCK@@
+
+R_CABLE N_MATCH N_CABLE_R {R_CABLE}
+L_CABLE N_CABLE_R CCP_FEED {L_CABLE}
+C_CABLE CCP_FEED CCP_N {C_CABLE}
+C_BLOCK CCP_FEED CCP_P {C_BLOCK}
+
+R_RETURN CCP_N N_RETURN_R {R_RETURN}
+L_RETURN N_RETURN_R 0 {L_RETURN}
+
+* Portable plasma placeholder (replace with your high-fidelity plasma model coupling).
+R_PLASMA CCP_P CCP_N 90
+C_PLASMA CCP_P CCP_N 35p
+R_STAB CCP_P CCP_N {R_STAB}
+
+.tran @@TSTEP@@ @@TSTOP@@
+.end

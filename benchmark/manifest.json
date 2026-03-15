@@ -1,0 +1,43 @@
+{
+  "name": "plasma_codesign_synthetic_benchmark",
+  "seed": 20260315,
+  "repo_root": ".",
+  "artifacts": {
+    "ccp_identification": {
+      "n_cases": 96,
+      "splits": {
+        "train": 60,
+        "val": 12,
+        "test_id": 12,
+        "test_ood": 12
+      },
+      "index": "ccp_identification/index.csv"
+    },
+    "icp_bias_identification": {
+      "n_cases": 80,
+      "splits": {
+        "train": 48,
+        "val": 12,
+        "test_id": 10,
+        "test_ood": 10
+      },
+      "index": "icp_bias_identification/index.csv"
+    },
+    "ccp_codesign": {
+      "n_designs": 80,
+      "n_scenarios_per_design": 4,
+      "n_cases": 320,
+      "cases": "ccp_codesign/ccp_cases.csv",
+      "aggregates": "ccp_codesign/ccp_design_aggregates.csv",
+      "traces": "ccp_codesign/ccp_traces.csv.gz"
+    },
+    "icp_bias_codesign": {
+      "n_designs": 64,
+      "n_scenarios_per_design": 4,
+      "n_cases": 256,
+      "cases": "icp_bias_codesign/icp_bias_cases.csv",
+      "aggregates": "icp_bias_codesign/icp_bias_design_aggregates.csv",
+      "traces": "icp_bias_codesign/icp_bias_traces.csv.gz"
+    }
+  }
+}

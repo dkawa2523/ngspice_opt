@@ -1,7 +1,5 @@
 .venv/
 results/
-benchmark/
-
 __pycache__/
 *.pyc
 
